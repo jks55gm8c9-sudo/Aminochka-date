@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Для Аминочки ♡</title>
+<style>
+:root{
+ --bg:#080809;--paper:rgba(15,15,16,.72);--text:#f7f2ed;--muted:#bdb5af;
+ --line:rgba(255,255,255,.18);--accent:#f2d7d4;--accentText:#171214;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif}
+body{overflow-x:hidden}
+button{font:inherit}
+.app{min-height:100svh;position:relative;overflow:hidden}
+.bg{position:fixed;inset:-2%;background-size:cover;background-position:center;filter:brightness(.31) saturate(.72);z-index:0;transform:scale(1.04);transition:background-image .9s ease,filter .6s ease}
+.shade{position:fixed;inset:0;z-index:1;background:
+ radial-gradient(circle at 50% 38%,rgba(255,220,210,.08),transparent 34%),
+ linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.84))}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+.top{position:fixed;top:0;left:0;right:0;z-index:10;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#d5cfca;letter-spacing:.12em;text-transform:uppercase}
+.music{border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.22);backdrop-filter:blur(12px);color:#eee;border-radius:999px;width:38px;height:38px;cursor:pointer}
+main{position:relative;z-index:3;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:74px 18px 32px}
+.screen{width:min(520px,100%);display:none;animation:in .65s cubic-bezier(.2,.75,.2,1) both}
+.screen.active{display:block}
+@keyframes in{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:none}}
+.kicker{text-align:center;font-size:11px;color:#c8c0ba;letter-spacing:.16em;text-transform:uppercase;margin-bottom:25px}
+h1{font-size:clamp(38px,10vw,62px);line-height:1.01;font-weight:400;text-align:center;margin:0 0 18px;letter-spacing:-.03em}
+h2{font-size:clamp(29px,7.5vw,44px);font-weight:400;text-align:center;line-height:1.07;margin:0 0 14px;letter-spacing:-.025em}
+.lead{text-align:center;font-size:18px;line-height:1.55;color:#ded7d1;margin:0 auto 30px;max-width:430px}
+.heart{text-align:center;font-size:25px;margin:17px 0;opacity:.9}
+.actions{display:grid;gap:11px;max-width:380px;margin:0 auto}
+.btn{height:57px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.035);color:#fff;cursor:pointer;transition:transform .25s ease,background .25s ease,border .25s ease}
+.btn:active{transform:scale(.98)}
+.btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.07)}
+.btn.primary{background:var(--accent);color:var(--accentText);border-color:transparent;box-shadow:0 12px 35px rgba(245,220,215,.13)}
+.note{max-width:430px;margin:0 auto;padding:32px 25px;background:var(--paper);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.13);box-shadow:0 25px 80px rgba(0,0,0,.35);text-align:center}
+.note p{font-size:20px;line-height:1.55;margin:8px 0;color:#eee7e1}
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:25px}
+.dot{width:24px;height:2px;background:rgba(255,255,255,.18)}
+.dot.on{background:#f0d8d4}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:24px 0 18px}
+.card{position:relative;min-height:145px;border:1px solid rgba(255,255,255,.24);border-radius:17px;overflow:hidden;background:#151515;cursor:pointer;text-align:left;padding:0;color:white}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48);transition:.4s}
+.card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.72))}
+.card span{position:absolute;z-index:2;left:13px;right:13px;bottom:13px;font-size:16px;line-height:1.15}
+.card .check{position:absolute;z-index:3;top:10px;right:10px;width:25px;height:25px;border:1px solid rgba(255,255,255,.5);border-radius:50%;display:grid;place-items:center;font-size:13px;background:rgba(0,0,0,.18);opacity:0}
+.card.selected{border-color:#f3dcd8;box-shadow:0 0 0 1px #f3dcd8 inset}
+.card.selected img{filter:brightness(.62)}
+.card.selected .check{opacity:1;background:#f3dcd8;color:#171214;border-color:#f3dcd8}
+.hint{text-align:center;color:#aaa29d;font-size:13px;margin:0 0 18px}
+.summary{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:22px auto 27px;max-width:430px}
+.pill{border:1px solid rgba(255,255,255,.16);padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.04);font-size:13px;color:#e4ddd7}
+.finalMark{text-align:center;font-size:43px;margin:0 0 18px}
+.signature{text-align:center;color:#d8cfca;font-size:16px;margin-top:22px}
+.fade{animation:fade 1.4s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media(max-width:390px){.cards{gap:9px}.card{min-height:132px}.card span{font-size:15px}.note{padding:28px 20px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bg" id="bg"></div><div class="shade"></div><div class="grain"></div>
+  <div class="top"><span>Особенное приглашение</span><button class="music" id="musicBtn" aria-label="Музыка">♪</button></div>
+
+  <main>
+    <section class="screen active" id="s0">
+      <div class="kicker">Для Аминочки</div>
+      <h1>У меня к тебе<br>одно предложение…</h1>
+      <p class="lead">Пойдём со мной на свидание?</p>
+      <div class="heart">♡</div>
+      <div class="actions"><button class="btn primary" onclick="accept()">Да</button></div>
+    </section>
+
+    <section class="screen" id="s1">
+      <div class="note">
+        <div class="kicker">Подожди</div>
+        <p>Ты серьёзно? Я же только что задал тебе этот вопрос…</p>
+        <p>Ну ладно, я не настаиваю.</p>
+        <p>Но всё равно — пойдём?</p>
+        <div class="actions" style="margin-top:25px"><button class="btn primary" onclick="go(2,'hero.jpg')">Пойдём ♡</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s2">
+      <div class="kicker">Есть одна маленькая проблема</div>
+      <h2>Я не могу решить,<br>куда именно мы пойдём.</h2>
+      <p class="lead">Поэтому выбор за тобой.</p>
+      <div class="actions"><button class="btn primary" onclick="go(3,'view.jpg')">Хорошо, выбираю</button></div>
+    </section>
+
+    <section class="screen" id="s3">
+      <div class="progress"><i class="dot on"></i><i class="dot on"></i><i class="dot"></i></div>
+      <div class="kicker">Твой выбор</div>
+      <h2>Куда тебе хотелось бы?</h2>
+      <p class="hint">Можно выбрать несколько вариантов</p>
+      <div class="cards">
+        <button class="card" data-choice="Красивый ресторан" style="--img:url('assets/restaurant.jpg')"><img src="assets/restaurant.jpg"><span>Красивый ресторан</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Место с красивым видом"><img src="assets/view.jpg"><span>Место с красивым видом</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Кино"><img src="assets/cinema.jpg"><span>Кино</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Бар / коктейли"><img src="assets/bar.jpg"><span>Бар / коктейли</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Вечерняя прогулка"><img src="assets/walk.jpg"><span>Вечерняя прогулка</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Выставка / музей"><img src="assets/museum.jpg"><span>Выставка / музей</span><b class="check">✓</b></button>
+        <button class="card" data-choice="Что-нибудь необычное"><img src="assets/surprise.jpg"><span>Что-нибудь необычное</span><b class="check">✓</b></button>
+      </div>
+      <div class="actions"><button class="btn primary" onclick="submitChoices()">Выбор сделан</button></div>
+    </section>
+
+    <section class="screen" id="s4">
+      <div class="note">
+        <div class="finalMark">♡</div>
+        <h2>Выбор сделан!</h2>
+        <p>Спасибо, я всё посмотрел.</p>
+        <p>Дальше всё беру на себя.</p>
+        <div class="summary" id="summary"></div>
+        <div class="actions"><button class="btn primary" onclick="go(5,'surprise.jpg')">Что дальше?</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s5">
+      <div class="kicker">Теперь самое интересное</div>
+      <h2>Ты уже сделала свой выбор…</h2>
+      <p class="lead">И это значит, что свидание точно состоится. Осталось только дождаться.</p>
+      <div class="actions"><button class="btn primary" onclick="go(6,'hero.jpg')">Хорошо ♡</button></div>
+    </section>
+
+    <section class="screen" id="s6">
+      <div class="note fade">
+        <div class="finalMark">✦</div>
+        <h2>Спасибо за твой выбор!</h2>
+        <p>Я уже всё организовываю…</p>
+        <p>До встречи, Аминочка.</p>
+        <div class="signature">Твой Кирюша ♡</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<audio id="audio" loop preload="auto">
+  <source src="perfect.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const bg=document.getElementById('bg');
+const audio=document.getElementById('audio');
+const musicBtn=document.getElementById('musicBtn');
+let musicOn=false;
+let selected=[];
+
+function setBg(name){
+  bg.style.backgroundImage=`url('assets/${name}')`;
+}
+function go(n,bgName){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  if(bgName) setBg(bgName);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startMusic(){
+  if(musicOn) return;
+  audio.play().then(()=>{musicOn=true;musicBtn.textContent='♫'}).catch(()=>{});
+}
+function accept(){
+  startMusic();
+  go(1,'hero.jpg');
+}
+musicBtn.addEventListener('click',()=>{
+  if(musicOn){audio.pause();musicOn=false;musicBtn.textContent='♪'}
+  else {audio.play().then(()=>{musicOn=true;musicBtn.textContent='♫'}).catch(()=>alert('Добавь файл perfect.mp3 рядом с index.html — после этого музыка будет играть.'))}
+});
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const choice=card.dataset.choice;
+    card.classList.toggle('selected');
+    if(selected.includes(choice)) selected=selected.filter(x=>x!==choice);
+    else selected.push(choice);
+  });
+});
+function submitChoices(){
+  if(!selected.length){
+    alert('Выбери хотя бы один вариант ♡');
+    return;
+  }
+  document.getElementById('summary').innerHTML=selected.map(x=>`<span class="pill">${x}</span>`).join('');
+  const text='Аминочка выбрала для свидания:\\n• '+selected.join('\\n• ');
+  const tg='https://t.me/share/url?url=&text='+encodeURIComponent(text);
+  // Открывает Telegram с готовым сообщением. Отправка происходит после нажатия "Отправить".
+  window.open(tg,'_blank');
+  go(4,'surprise.jpg');
+}
+setBg('hero.jpg');
+</script>
+</body>
+</html>
